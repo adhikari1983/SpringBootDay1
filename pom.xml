@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.any</groupId>
+    <artifactId>springBootDay1</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.6.RELEASE</version> <!-- RELEASE is just a label to indicate that this is a stable, production-ready version.-->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+        <!-- Spring boot web -->
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+        <!--suppress VulnerableLibrariesLocal -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- If you do some change then container will automatically starts -->
+        <!-- but doesn't work with my intellij Community version-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!--
+            compile: (default)
+            The dependency is available at both compile-time and runtime.
+            It is included in the final build artifact (JAR/WAR).
+            Most dependencies fall under this scope.
+         -->
+
+        <!--
+            provided:
+            The dependency is needed for compilation, but will be provided by the runtime environment
+            (like a servlet container or application server — e.g., Tomcat, Jetty).
+            It is not included in the final build artifact to avoid duplication.
+        -->
+
+        <!--
+            runtime:
+            The dependency is not needed during compilation but is required when the application runs.
+            Commonly used for JDBC drivers and other libraries loaded dynamically at runtime.
+        -->
+
+        <!--
+            test:
+            The dependency is only available during test compilation and test execution.
+            It is excluded from the final build. Typically used for testing frameworks like JUnit, Mockito, etc.
+        -->
+
+        <!-- JSP files -->
+        <!-- We need below two jars for jsp -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+
+
+        <!-- Below will download spring data + jpa+ hibernate etc -->
+        <!--suppress VulnerableLibrariesLocal -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <!--@1st <scope>provided</scope> was provided and had issue, inside the tomcat-embed-jasper dependency
+         means JSP rendering engine is not included at runtime. That’s why i was getting:
+         error : WARN ResourceHttpRequestHandler: Path with "WEB-INF": [WEB-INF/pages/loginPage.jsp]
+         And this results in Spring Boot’s fallback: Whitelabel Error Page – 404 Not Found-->
+
+        <!-- This is used to connect java with mysql database -->
+        <!--suppress VulnerableLibrariesLocal -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
+    </dependencies>
+</project>

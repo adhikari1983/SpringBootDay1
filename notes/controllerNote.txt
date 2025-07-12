@@ -1,0 +1,35 @@
+/** don't update your project before creation of this front controller, otherwise it will throw an exception. */
+Above comment :
+          is trying to warn you, but it’s worded vaguely. Here's what it probably means, explained clearly:
+
+✅ What it actually means (rewritten in better words):
+⚠️ Important: Make sure the FrontController class (or main controller) is already created and properly
+     annotated with @Controller before you try to:
+            1. run your Spring MVC project
+            2. refresh/update the project
+            3.  access any endpoint in the browser
+
+❌ Otherwise, Spring will fail to start or show a 404 error, because there will be no controller mapped to
+ handle requests.
+
+✅ Why this happens:
+In a Spring MVC app, the DispatcherServlet (your front controller in Spring) relies on @Controller-annotated
+classes to route HTTP requests.
+
+                            If no controller like this exists:
+                            @Controller
+                            public class FrontController {
+                                @GetMapping("/")
+                                public String loginPage() {
+                                    return "login";
+                                }
+                            }
+Then Spring won’t know how to handle requests like /, and it may throw:
+                No mapping found for GET /
+                or even a context initialization error in some cases.
+So,
+/**
+ * ⚠️ Make sure this controller class is created BEFORE running or refreshing the project.
+ * If you run the app without this controller in place, Spring will throw errors or show a 404 page,
+ * because there will be no mapping to handle root ("/") or login requests.
+ */

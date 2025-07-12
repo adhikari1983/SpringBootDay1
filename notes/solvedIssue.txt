@@ -1,0 +1,9 @@
+case 1: The 404 Whitelabel Error Page is happening because Spring Boot cannot render JSPs from the WEB-INF
+        folder directly, and a key configuration step is missing.
+        e.g. fix => application.properties or fix => pom.xml dependency.
+
+case 2: @1st <scope>provided</scope> was provided and had issue, inside the tomcat-embed-jasper dependency
+                 means JSP rendering engine is not included at runtime. That’s why i was getting:
+                 error : WARN ResourceHttpRequestHandler: Path with "WEB-INF": [WEB-INF/pages/login.jsp]
+                 And this results in Spring Boot’s fallback: Whitelabel Error Page – 404 Not Found
+

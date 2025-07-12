@@ -1,0 +1,128 @@
+✅ First, Basic Roles Recap
+     Component	                                    Purpose
+DTO (EmployeeDTO)	           Transfers data between UI ↔ Controller ↔ Service. Doesn’t map to database directly.
+Entity (EmployeeEntity)	       Represents a database table. Managed by JPA.
+DAO (EmployeeDAO)	           Repository layer that talks to DB using Spring Data JPA.
+Controller	                   Handles HTTP requests. Sends data to service.
+Service	                       Business logic. Coordinates DTO ↔ Entity conversion and calls DAO.
+
+com.myapp
+├── controller
+│   └── EmployeeController.java        ← controller talks to Service, and Service talks to DAO.
+├── dto
+│   └── EmployeeDTO.java               ← carries form/UI data
+├── entity
+│   └── EmployeeEntity.java            ← maps to DB table
+├── dao
+│   └── EmployeeDAO.java               ← JPA Repository
+├── service
+│   ├── EmployeeService.java           ← interface
+│   └── EmployeeServiceImpl.java       ← business logic, converts DTO ⇄ Entity
+└── SpringBootRunner.java              ← Spring Boot entry point
+
+resources
+└── application.properties
+
+webapp
+│── images
+└── WEB-INF
+    └── pages
+        ├── login.jsp
+        ├── employeeRegistration.jsp
+        └── registrationStatus.jsp
+
+🔽 1. Saving (Registering) Data Flow — Frontend ➡ Database
+
+Let’s say a user fills a registration form and submits it.
+
+Step-by-step:
+User submits form on employeeRegistration.jsp
+
+Spring MVC Controller receives form data as EmployeeDTO
+                public String registerEmployee(@ModelAttribute EmployeeDTO employeeDTO, Model model)
+                Controller passes DTO to Service Layer
+
+Service Layer:
+                Converts EmployeeDTO → EmployeeEntity
+
+                BeanUtils.copyProperties(employeeDTO, employeeEntity);
+                Calls employeeDAO.save(employeeEntity)
+
+DAO Layer (JPA Repository) saves EmployeeEntity to DB
+Then,
+     Database stores the record
+✅ So for saving, the source of data is EmployeeDTO, and the target is EmployeeEntity.
+
+🟢 Saving Data (Form ➡ DB)
+User Input (JSP: employeeRegistration.jsp)
+        │
+        ▼
+Controller: EmployeeController.java
+    └── @PostMapping("/registration")
+        └── Receives EmployeeDTO from the registration.jsp form
+        │
+        ▼
+Service: EmployeeServiceImpl.java
+    └── Converts DTO → Entity using BeanUtils
+    └── Calls employeeDAO.save(entity)
+        │
+        ▼
+Repository (DAO): EmployeeDAO.java
+    └── Extends JpaRepository<EmployeeEntity, Integer>
+        │
+        ▼
+Database: Demo_Table (mapped by EmployeeEntity)
+
+
+🔼 2. Fetching (Reading) Data Flow — Database ➡ UI
+Let’s say you want to show employee details on a JSP.
+
+Step-by-step:
+Controller calls EmployeeService.getEmployeeById(id)
+
+Service Layer:
+            Fetches EmployeeEntity from DB using DAO
+
+            EmployeeEntity entity = employeeDAO.findById(id).orElse(null);
+            Converts EmployeeEntity → EmployeeDTO
+
+BeanUtils.copyProperties(entity, dto);
+Service returns DTO to Controller
+
+Controller adds DTO to Model
+
+model.addAttribute("employee", employeeDTO);
+
+JSP page renders using the employee attribute
+✅ So for returning data, the source is EmployeeEntity, and the target is EmployeeDTO.
+
+🔵 Fetching Data (DB ➡ JSP)
+Request (e.g., /employeeDetails?id=101)
+        │
+        ▼
+Controller: EmployeeController.java
+    └── @GetMapping("/employeeDetails")
+        └── Calls service to fetch EmployeeEntity
+        │
+        ▼
+Service: EmployeeServiceImpl.java
+    └── Calls employeeDAO.findById(id)
+    └── Converts Entity → DTO using BeanUtils
+        │
+        ▼
+Controller adds DTO to Model
+        │
+        ▼
+JSP View: employeeDetails.jsp
+    └── Displays data from model attribute "employee"
+
+The correct flow is:
+                        Controller ⇄ DTO ⇄ Service ⇄ Entity ⇄ DAO ⇄ Database
+
+✅ For Saving (Form to DB):
+                            [Form (JSP)] → EmployeeDTO → Controller → Service → EmployeeEntity → DAO → Database
+
+✅ For Fetching (DB to UI):
+                            Database → DAO → EmployeeEntity → Service → EmployeeDTO → Controller → JSP (via Model)
+
+
