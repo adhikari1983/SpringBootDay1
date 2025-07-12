@@ -22,6 +22,8 @@ import java.util.Map;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    
+    /// *******ExceptionHandler methods to catch specific exception types********///
 
     /**
      * Handles {@link DuplicateEmailException} thrown by any controller method.
